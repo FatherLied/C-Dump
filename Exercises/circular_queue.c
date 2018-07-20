@@ -17,7 +17,7 @@ void enqueue(QUEUE *queue, int item);
 // Dequeues the first item of the queue
 int dequeue(QUEUE *queue);
 
-// Prints the entire list
+// Prints the entire queue
 void printList(QUEUE queue);
 
 // ~~ PROGRAM MAIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
@@ -94,7 +94,7 @@ int dequeue(QUEUE *queue) {
 	return d_item;
 }
 
-// Prints the entire list
+// Prints the entire queue
 void printList(QUEUE queue) {
 	int ptr = (queue.nextIndex + MAX_LENGTH - queue.size) % MAX_LENGTH;
 	printf("List(");
