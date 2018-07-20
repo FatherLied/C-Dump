@@ -10,12 +10,12 @@ typedef struct ArrList {
 
 ORDEREDLIST newList();      // Creates a new ordered list
 
-void addListItem(ORDEREDLIST *list, int item);      // Adds an item to the list
+int addListItem(ORDEREDLIST *list, int item);      // Adds an item to the list
 int removeListItem(ORDEREDLIST *list, int item);    // Removes an item from the list
 
 void printList(ORDEREDLIST list);   // Prints the entire list
 
-									// ~~ PROGRAM MAIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+// ~~ PROGRAM MAIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 int main() {
 	ORDEREDLIST list = newList();
@@ -46,7 +46,7 @@ ORDEREDLIST newList() {
 // ~~ ORDERED LIST FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 // Adds an item to the list
-void addListItem(ORDEREDLIST *list, int item) {
+int addListItem(ORDEREDLIST *list, int item) {
 	int i = 0;
 
 	// Exits if list is full
@@ -54,7 +54,7 @@ void addListItem(ORDEREDLIST *list, int item) {
 		if (DEBUG) {
 			printf("List is full. \n");                     // Debug message
 		}
-		return;
+		return 0;       // Returns 0 on failure
 	}
 
 	// Iterates the entire list
@@ -71,13 +71,15 @@ void addListItem(ORDEREDLIST *list, int item) {
 			if (DEBUG) {
 				printf("Successfully added <%d>. \n", item); // Debug message
 			}
-			return;
+			return 1;   // Returns 1 on success
 		}
 	}
 
 	// Inserts item if it is greater than all those in the list 
 	list->list[i] = item;
 	list->size++;
+
+	return 1;           // Returns 1 on success
 }
 
 // Removes an item from the list
@@ -88,7 +90,7 @@ int removeListItem(ORDEREDLIST *list, int item) {
 		if (DEBUG) {
 			printf("Nothing to remove. \n");                // Debug message
 		}
-		return 0;
+		return 0;       // Returns 0 on failure
 	}
 
 	// Searches for item in the list
@@ -103,7 +105,7 @@ int removeListItem(ORDEREDLIST *list, int item) {
 			if (DEBUG) {
 				printf("Successfully removed <%d>. \n", item);
 			}
-			return;
+			return 1;   // Returns 1 on success
 		}
 	}
 
@@ -111,6 +113,8 @@ int removeListItem(ORDEREDLIST *list, int item) {
 	if (DEBUG) {
 		printf("Item not in list. \n");                     // Debug message
 	}
+
+	return 0;           // Returns 0 on failure
 }
 
 

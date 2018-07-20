@@ -1,0 +1,19 @@
+Ordered Lists
+
+	Array List Implementation:
+	* Advantages:
+		-	Computationally fast when accessing elements.
+		-	Static size, cheap in memory usage.
+
+	* Disadvantages:
+		-	Max size is determined in advance. Resizing may be a hassle and computationally expensive.
+		-	Inserting/removing is computationally expensive; must move elements one by one through the list.
+
+	Linked List (Pointer) Implementation:
+	* Advantages:
+		-	Inserting/Removing elements is computationally fast.
+		-	Dynamic size, can support near infinite growth.
+
+	* Disadvantages:
+		-	Traversing is computationally expensive; by extension, accessing elements is also expensive.
+		-	Increase in size also increases the hassle in traversal.

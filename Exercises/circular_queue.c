@@ -10,10 +10,10 @@ typedef struct ArrList {
 } QUEUE;
 
 // Creates a new Queue
-QUEUE newList();
+QUEUE newQueue();
 
 // Enqueues the item to the end of the queue
-void enqueue(QUEUE *queue, int item);
+int enqueue(QUEUE *queue, int item);
 // Dequeues the first item of the queue
 int dequeue(QUEUE *queue);
 
@@ -23,7 +23,7 @@ void printList(QUEUE queue);
 // ~~ PROGRAM MAIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 int main() {
-	QUEUE list = newList();
+	QUEUE list = newQueue();
 	enqueue(&list, 5);
 	enqueue(&list, 4);
 	enqueue(&list, 3);
@@ -45,7 +45,7 @@ int main() {
 // ~~ QUEUE CONSTRUCTOR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 // Creates a new Queue
-QUEUE newList() {
+QUEUE newQueue() {
 	QUEUE list;
 	list.nextIndex = 0;
 	list.size = 0;
@@ -56,19 +56,19 @@ QUEUE newList() {
 // ~~ QUEUE FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 // Enqueues the item to the end of the queue
-void enqueue(QUEUE *queue, int item) {
+int enqueue(QUEUE *queue, int item) {
 	if (queue->size < MAX_LENGTH) {
 		queue->list[queue->nextIndex] = item;
 		queue->nextIndex = ++queue->nextIndex % MAX_LENGTH;
 		queue->size++;
 		if (DEBUG)
 			printf("Added <%d> sucessfully. \n", item); // Debug Message
-		return;
+		return 1;   // Returns 1 on sucess
 	}
 	else {
 		if (DEBUG)
 			printf("Queue is full. \n");                // Debug Message
-		return;
+		return 0;   // Returns 0 on failure
 	}
 }
 
@@ -82,16 +82,18 @@ int dequeue(QUEUE *queue) {
 		d_index = (queue->nextIndex + MAX_LENGTH - queue->size) % MAX_LENGTH;
 		d_item = queue->list[d_index];
 		queue->size--;
-		if (DEBUG)
+		if (DEBUG) {
 			printf("Dequeued <%d>. \n", d_item);        // Debug Message
+		}
+		return 0;   // Returns 1 is something was dequeued
 	}
 	else {
-		if (DEBUG)
-			printf("Nothing to Dequeue. \n");           // Debug Message
+		if (DEBUG) {
+			printf("Nothing to Dequeue. \n");           // Debug messages
+		}
 	}
 
-	// Returns 0 as default, else returns the dequeued item 
-	return d_item;
+	return 0;       // Returns 0 if nothing was removed
 }
 
 // Prints the entire queue
