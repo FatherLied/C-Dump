@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <conio.h>
 #define DEBUG 1         // Debug Mode (set to 0 to disable debug messages)
 
 // Node structure
@@ -22,23 +23,51 @@ int pop(STACK *stack);              // Pops an item from the stack
 void init(NODE *n, int i);     // Initialize a node
 void printStack(STACK stack);   // Prints entire stack
 
+int is_numeric(char *str);          // Checks if string is numeric
+void input_loop(STACK *stack, char mode);      // Input loop
+
 // ~~ PROGRAM MAIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 int main()
 {
-    STACK stack = newStack();
-    pop(&stack);
-    push(&stack, 5);
-    push(&stack, 3);
-    push(&stack, 6);
-    push(&stack, 1);
-    push(&stack, -1);
+    char selection = '\0';
+    int selection_is_valid = 1;
+    int input_is_valid = 1;
 
-    printStack(stack);
+    STACK list = newStack();
 
-    pop(&stack);
+    do {
+        system("cls");
+        printf("LINKED STACK\n\n");
+        printf("\t<1> Push item.\n");
+        printf("\t<2> Pop item.\n\n");
+        printf("\t<0> Exit.\n\n");
 
-    printStack(stack);
+        if (!selection_is_valid){
+            printf("\tInvalid choice. Valid keys are labeled with <>.");
+        } else {
+            printf("\tSelect option in <>.");
+        }
+        printf("\n\n\t");
+        printStack(list);
+
+        selection = getch();
+
+        selection_is_valid = 1;
+        switch (selection) {
+            case '1':
+                input_loop(&list, 'o');     // Push item
+                break;
+            case '2':
+                input_loop(&list, 'x');     // Pop item
+                break;
+            case '0':
+                break;
+            default:
+                selection_is_valid = 0;
+        }
+    } while (selection != '0');
+
     return 0;
 }
 
@@ -140,5 +169,65 @@ void printStack(STACK stack){
 
     printf(" )\n");
 
-    printf("\tTOP: [%d] => %d \n", (stack.size - 1), stack.top->item);
+    // Shows top index, else "-1" if stack is empty
+    printf("\tTop:    Index is: [%d]\n", (stack.size - 1));
+    // Shows bottom index, starts at 0
+    printf("\tBottom: Index is: [%d]\n", (stack.size - stack.size));
+}
+
+// ~~ HELPER FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+// Checks if string is numeric
+int is_numeric (char *str) {
+    int i = 0;
+
+    for (; str[i] != '\0'; i++) {
+        if (!(str[i] >= '0' && str[i] <= '9')){
+            return 0;
+        }
+    }
+
+    if (i <= 0) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+// Input loop
+void input_loop(STACK *stack, char mode) {
+    int is_valid_input = 1;
+    char input[10];
+
+    if (mode == 'o') {
+        do {
+            system("cls");
+
+            printf("Push Item:\n\n");
+
+            if (!is_valid_input) {
+                printf("\tInput is not numeric.\n");
+            }
+            printf("\tInput: ");
+            
+            gets(input);
+            input[10] = '\0';   // Ensures that input is 10 characters max
+
+            is_valid_input = is_numeric(input);
+
+        } while(!is_valid_input);
+
+        printf("\n\t");
+        push(stack, atoi(input));
+    } else if (mode == 'x') {
+        system("cls");
+        printf("Pop Item:\n\n");
+        printf("\t");
+        pop(stack);
+    }
+
+    if (DEBUG){                         // Debug message
+        printf("\t");
+        system("pause");
+    }
 }

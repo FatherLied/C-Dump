@@ -9,7 +9,7 @@ typedef struct node {
     struct node *next;
 } NODE;
 
-// Doubly Linked List
+// Single Linked List
 typedef struct llist {
     NODE *head, *tail;
     int size;
@@ -23,10 +23,49 @@ int removeListItem(ORDEREDLIST *list, int item);    // Removes the first occuren
 void init(NODE *n, int i);          // Initialize a node
 void printList(ORDEREDLIST list);   // Prints entire stack
 
+int is_numeric(char *str);          // Checks if string is numeric
+void input_loop(ORDEREDLIST *list, char mode);      // Input loop
+
 // ~~ PROGRAM MAIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 int main () {
-    
+    char selection = '\0';
+    int selection_is_valid = 1;
+    int input_is_valid = 1;
+
+    ORDEREDLIST list = newList();
+
+    do {
+        system("cls");
+        printf("ORDERED LINKED LIST\n\n");
+        printf("\t<1> Add item.\n");
+        printf("\t<2> Remove item.\n\n");
+        printf("\t<0> Exit.\n\n");
+
+        if (!selection_is_valid){
+            printf("\tInvalid choice. Valid keys are labeled with <>.");
+        } else {
+            printf("\tSelect option in <>.");
+        }
+        printf("\n\n\t");
+        printList(list);
+
+        selection = getch();
+
+        selection_is_valid = 1;
+        switch (selection) {
+            case '1':
+                input_loop(&list, 'a');
+                break;
+            case '2':
+                input_loop(&list, 'r');
+                break;
+            case '0':
+                break;
+            default:
+                selection_is_valid = 0;
+        }
+    } while (selection != '0');
 
     return 0;
 }
@@ -62,7 +101,7 @@ int addListItem(ORDEREDLIST *list, int item) {
         list->tail = new_node;
         list->size++;
 
-        if (DEBUG) {
+        if (DEBUG) {                    // Debug message
             printf("Successfully added <%d>. \n", item);
         }
 
@@ -86,7 +125,7 @@ int addListItem(ORDEREDLIST *list, int item) {
 
             list->size++;
 
-            if (DEBUG) {
+            if (DEBUG) {                // Debug message
                 printf("Successfully added <%d>. \n", item);
             }
 
@@ -111,7 +150,7 @@ int addListItem(ORDEREDLIST *list, int item) {
 // Removes the first occurence of an item from the list
 int removeListItem(ORDEREDLIST *list, int item) {
     if (list->size <= 0) {
-        if (DEBUG) {
+        if (DEBUG) {                    // Debug message
             printf("List is empty. \n");
         }
         return 0;       // Returns 0 since there's nothing to remove
@@ -131,7 +170,7 @@ int removeListItem(ORDEREDLIST *list, int item) {
             free(ptr);
             list->size--;
 
-            if (DEBUG) {
+            if (DEBUG) {                // Debug message
                 printf("Successfully removed <%d>. \n", item);
             }
 
@@ -141,7 +180,7 @@ int removeListItem(ORDEREDLIST *list, int item) {
         last = ptr;
     }
 
-    if (DEBUG) {
+    if (DEBUG) {                        // Debug message
         printf("Item is not in list. \n");
     }
 
@@ -165,4 +204,65 @@ void printList(ORDEREDLIST list) {
     }
 
     printf(" )\n");
+}
+
+// ~~ HELPER FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+// Checks if string is numeric
+int is_numeric (char *str) {
+    int i = 0;
+
+    for (; str[i] != '\0'; i++) {
+        if (!(str[i] >= '0' && str[i] <= '9')){
+            return 0;
+        }
+    }
+
+    if (i <= 0) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+// Input loop
+void input_loop(ORDEREDLIST *list, char mode) {
+    int is_valid_input = 1;
+    char input[10];
+
+    do {
+        system("cls");
+
+        if (mode == 'a') {           // 'a' for adding items
+            printf("Add Item:\n\n");
+        } else if (mode == 'r') {    // 'r' for removing items
+            printf("Remove Item:\n\n");
+        } else {
+            return; // Failsafe in case non-valid mode is entered
+        }
+
+        if (!is_valid_input) {
+            printf("\tInput is not numeric.\n");
+        }
+        printf("\tInput: ");
+        
+        gets(input);
+        input[10] = '\0';   // Ensures that input is 10 characters max
+
+        is_valid_input = is_numeric(input);
+
+    } while(!is_valid_input);
+
+    if (mode == 'a') {
+        printf("\n\t");
+        addListItem(list, atoi(input));
+    } else if (mode == 'r') {
+        printf("\n\t");
+        removeListItem(list, atoi(input));
+    }
+
+    if (DEBUG){                         // Debug message
+        printf("\t");
+        system("pause");
+    }
 }

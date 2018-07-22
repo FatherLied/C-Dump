@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
 
 #define MAX_LENGTH 5    // Max Length of an array
-#define DEBUG 0         // Debug Mode (set to 0 to disable debug messages)
+#define DEBUG 1         // Debug Mode (set to 0 to disable debug messages)
 
 typedef struct ArrList {
     int list[MAX_LENGTH];
@@ -20,26 +22,51 @@ int dequeue(QUEUE *queue);
 // Prints the entire queue
 void printList(QUEUE queue);
 
+int is_numeric(char *str);          // Checks if string is numeric
+void input_loop(QUEUE *queue, char mode);      // Input loop
+
 // ~~ PROGRAM MAIN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 
 int main() {
-    QUEUE list = newQueue();
-    enqueue(&list, 5);
-    enqueue(&list, 4);
-    enqueue(&list, 3);
-    enqueue(&list, 2);
-    enqueue(&list, 1);
-    enqueue(&list, 0);
-    printList(list);
-    dequeue(&list);
-    printList(list);
-    enqueue(&list, 6);
-    printList(list);
-    dequeue(&list);
-    printList(list);
+    char selection = '\0';
+    int selection_is_valid = 1;
+    int input_is_valid = 1;
 
-    printf("\nSize: %d", list.size);
-    printf("\nNext Index: %d", list.next_index);
+    QUEUE list = newQueue();
+
+    do {
+        system("cls");
+        printf("CIRCULAR QUEUE\n\n");
+        printf("\t<1> Enqueue item.\n");
+        printf("\t<2> Dequeue item.\n\n");
+        printf("\t<0> Exit.\n\n");
+
+        if (!selection_is_valid){
+            printf("\tInvalid choice. Valid keys are labeled with <>.");
+        } else {
+            printf("\tSelect option in <>.");
+        }
+        printf("\n\n\t");
+        printList(list);
+
+        selection = getch();
+
+        selection_is_valid = 1;
+        switch (selection) {
+            case '1':
+                input_loop(&list, 'e');
+                break;
+            case '2':
+                input_loop(&list, 'd');
+                break;
+            case '0':
+                break;
+            default:
+                selection_is_valid = 0;
+        }
+    } while (selection != '0');
+
+    return 0;
 }
 
 // ~~ QUEUE CONSTRUCTOR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
@@ -118,6 +145,65 @@ void printList(QUEUE queue) {
 
     printf(" )\n");
 
-    printf("\tHead: [%d] => %d \n", head_index, queue.list[head_index]);   // Prints the true index of head
-    printf("\tTail: [%d] => %d \n", tail_index, queue.list[tail_index]);   // Prints the true index of tail
+    // Shows true index of the head, based on circular array
+    printf("\tHead: True index is [%d] \n", head_index);
+    // Shows true index of the tail, based on circular array
+    printf("\tTail: True index is [%d] \n", tail_index);
+}
+
+// ~~ HELPER FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
+
+// Checks if string is numeric
+int is_numeric (char *str) {
+    int i = 0;
+
+    for (; str[i] != '\0'; i++) {
+        if (!(str[i] >= '0' && str[i] <= '9')){
+            return 0;
+        }
+    }
+
+    if (i <= 0) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+// Input loop
+void input_loop(QUEUE *queue, char mode) {
+    int is_valid_input = 1;
+    char input[10];
+
+    if (mode == 'e') {
+        do {
+            system("cls");
+
+            printf("Enqueue Item:\n\n");
+
+            if (!is_valid_input) {
+                printf("\tInput is not numeric.\n");
+            }
+            printf("\tInput: ");
+            
+            gets(input);
+            input[10] = '\0';   // Ensures that input is 10 characters max
+
+            is_valid_input = is_numeric(input);
+
+        } while(!is_valid_input);
+
+        printf("\n\t");
+        enqueue(queue, atoi(input));
+    } else if (mode == 'd') {
+        system("cls");
+        printf("Dequeue Item:\n\n");
+        printf("\t");
+        dequeue(queue);
+    }
+
+    if (DEBUG){                         // Debug message
+        printf("\t");
+        system("pause");
+    }
 }
